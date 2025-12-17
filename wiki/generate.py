@@ -15,6 +15,7 @@ GENERATE_PROMPT = """\
 ### 応答:
 """
 
+
 # モデルとトークナイザのロード（学習済みフォルダから） --- (*2)
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = DIR_MODEL,  # 保存したフォルダ
