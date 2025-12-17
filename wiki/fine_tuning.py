@@ -34,6 +34,7 @@ if MAX_DATASET_SIZE < len(corpus_data):
 
 print(f"データセット件数: {len(corpus_data)}")
 
+
 # モデルとトークナイザの読み込み --- (*3)
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name=MODEL_NAME,
