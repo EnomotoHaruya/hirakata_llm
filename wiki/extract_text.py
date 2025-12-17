@@ -9,6 +9,7 @@ def is_anime(text: str) -> bool: # --- (*1)
     """アニメに関するテキストかどうかを判定"""
     return "Category:枚方市" in text
 
+
 def extract_text(file_obj):
     """指定されたファイルからテキストを抽出する関数"""
     dump = mwxml.Dump.from_file(file_obj) # --- (*2)
