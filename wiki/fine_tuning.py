@@ -46,14 +46,14 @@ model, tokenizer = FastLanguageModel.from_pretrained(
 target_modules = ["q_proj", "k_proj", "v_proj", "up_proj", "down_proj", "o_proj", "gate_proj"]
 model = FastLanguageModel.get_peft_model(
     model,
-    r = 16, # Suggested 8, 16, 32, 64, 128
+    r = 64, # Suggested 8, 16, 32, 64, 128
     target_modules=target_modules,
-    lora_alpha = 16,
+    lora_alpha = 128,
     lora_dropout = 0,
     bias="none",
     # unslothモデルの場合は勾配チェックポイントを有効化
     use_gradient_checkpointing = "unsloth" in MODEL_NAME,
-    use_rslora = False,
+    use_rslora = True,
     loftq_config = None,
 )
 # トークナイザーのEOSトークンを確認 --- (*5)
@@ -86,7 +86,7 @@ training_args = TrainingArguments(
     per_device_train_batch_size=2,
     gradient_accumulation_steps=4,
     warmup_steps=5,
-    max_steps=MAX_STEPS,
+    num_train_epochs=3,
     learning_rate=2e-4,
     optim="adamw_8bit",
     logging_dir="./logs",
