@@ -17,6 +17,7 @@ GENERATE_PROMPT = """
 {text}
 """
 
+
 # Ollama に問い合わせる関数（chat API対応）
 def ask_ollama(prompt):
     for _ in range(3):  # 3回までリトライ
