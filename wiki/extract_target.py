@@ -2,8 +2,7 @@
 import json
 import os
 import re
-
-import config
+import hirakata_bot.config as config
 
 def extract_files_from_corpus():
     """corpusディレクトリから枚方関連テキストを抽出する関数"""
@@ -11,7 +10,7 @@ def extract_files_from_corpus():
     file_list = []
 
 
-    for root, _dirs, files in os.walk(config.DIR_CORPUS_TEXT):
+    for root, _dirs, files in os.walk(config.DIR_WIKI_CORPUS_TEXT):
         for file in files:
             if not file.endswith(".txt"):
                 continue
@@ -38,7 +37,7 @@ def extract_files_from_corpus():
     print(f"対象のファイル数: {len(file_list)}")
 
     # 対象ファイル一覧をJSONに保存
-    with open(config.CORPUS_TARGET_FILES, "w", encoding="utf-8") as f:
+    with open(config.JSON_WIKI_TARGET_FILES, "w", encoding="utf-8") as f:
         json.dump(file_list, f, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
