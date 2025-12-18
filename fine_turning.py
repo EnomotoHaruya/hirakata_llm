@@ -6,7 +6,7 @@ from trl import SFTTrainer
 from transformers import TrainingArguments
 import torch
 from datasets import Dataset
-from config import *
+import hirakata_bot.config as config
 
 FINE_TUNING_PROMPT = """\
 あなたは枚方市に関する質問に答えるアシスタントです。
@@ -20,7 +20,7 @@ FINE_TUNING_PROMPT = """\
 
 # データセットの読み込み（JSONL形式を行単位で）
 corpus_data = []
-with open(JSON_DATASET_FILE, "r", encoding="utf-8") as f:
+with open(config.JSON_MERGED_DATASET_FILE, "r", encoding="utf-8") as f:
     for line in f:
         line = line.strip()
         if not line:
@@ -28,16 +28,16 @@ with open(JSON_DATASET_FILE, "r", encoding="utf-8") as f:
         corpus_data.append(json.loads(line))
 
 # データサイズ制限
-if MAX_DATASET_SIZE < len(corpus_data):
+if config.MAX_DATASET_SIZE < len(corpus_data):
     random.shuffle(corpus_data)
-    corpus_data = corpus_data[:MAX_DATASET_SIZE]
+    corpus_data = corpus_data[:config.MAX_DATASET_SIZE]
 
 print(f"データセット件数: {len(corpus_data)}")
 
 # モデルとトークナイザの読み込み --- (*3)
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name=MODEL_NAME,
-    max_seq_length=MAX_SEQ_LENGTH,
+    model_name=config.MODEL_NAME,
+    max_seq_length=config.MAX_SEQ_LENGTH,
     dtype=None,
     load_in_4bit=True,
 )
@@ -51,7 +51,7 @@ model = FastLanguageModel.get_peft_model(
     lora_dropout = 0,
     bias="none",
     # unslothモデルの場合は勾配チェックポイントを有効化
-    use_gradient_checkpointing = "unsloth" in MODEL_NAME,
+    use_gradient_checkpointing = "unsloth" in config.MODEL_NAME,
     use_rslora = False,
     loftq_config = None,
 )
@@ -81,11 +81,11 @@ print(dataset[:3]) # データセットの最初の3件を表示
 
 # 学習のための設定 --- (*7)
 training_args = TrainingArguments(
-    output_dir=DIR_MODEL,
+    output_dir=config.DIR_MODEL,
     per_device_train_batch_size=2,
     gradient_accumulation_steps=4,
     warmup_steps=5,
-    max_steps=MAX_STEPS,
+    max_steps=config.MAX_STEPS,
     learning_rate=2e-4,
     optim="adamw_8bit",
     logging_dir="./logs",
@@ -109,5 +109,5 @@ trainer = SFTTrainer(
 trainer.train()
 
 # 学習したモデルを保存 --- (*9)
-model.save_pretrained(DIR_MODEL)
-tokenizer.save_pretrained(DIR_MODEL)
+model.save_pretrained(config.DIR_MODEL)
+tokenizer.save_pretrained(config.DIR_MODEL)
