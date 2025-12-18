@@ -3,7 +3,8 @@ import os
 import mwxml
 import mwparserfromhell
 
-import config
+import hirakata_bot.config as config
+
 
 def is_anime(text: str) -> bool: # --- (*1)
     """アニメに関するテキストかどうかを判定"""
@@ -21,12 +22,12 @@ def extract_text(file_obj):
             if rev.text and is_anime(rev.text): # --- (*3)
                 save_text(page.title, rev.text, counter)
                 counter += 1
-    print(f"抽出完了: {counter} ページのテキストを {config.DIR_CORPUS_TEXT} に保存しました。")
+    print(f"抽出完了: {counter} ページのテキストを {config.DIR_WIKI_CORPUS_TEXT} に保存しました。")
 
 def save_text(title: str, text: str, cnt: int): # --- (*4)
     """抽出したテキストをファイルに保存する関数"""
     # テキストを抽出して保存
-    savedir = os.path.join(config.DIR_CORPUS_TEXT, f"{cnt // 100 * 100:06d}")
+    savedir = os.path.join(config.DIR_WIKI_CORPUS_TEXT, f"{cnt // 100 * 100:06d}")
     fname = os.path.join(savedir, f"{cnt:06d}.txt")
     if cnt % 100 == 0:
         print(f"  - [保存]: ({cnt:06d}) {title}")
